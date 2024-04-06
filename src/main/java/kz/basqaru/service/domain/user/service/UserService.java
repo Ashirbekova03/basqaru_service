@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -67,13 +68,14 @@ public class UserService {
     }
 
     public ResponseEntity<?> changeProfile(User user, UserDataRequest userDataRequest) {
-        if (!user.getEmail().equals(userDataRequest.getEmail())) {
-            Optional<User> userOptional = repository.findByEmail(userDataRequest.getEmail());
-            if (userOptional.isPresent()) {
-                return ResponseEntity.badRequest().body("Email already registered!");
+        Optional<User> userOptional = repository.findByEmail(userDataRequest.getEmail());
+        if (userOptional.isPresent()) {
+            User userNew = userOptional.get();
+            if (!Objects.equals(userNew.getId(), user.getId())) {
+                return ResponseEntity.badRequest().body("Email already exists!");
             }
-            user.setEmail(userDataRequest.getEmail());
         }
+        user.setEmail(userDataRequest.getEmail());
         user.setFullName(userDataRequest.getUsername());
         String token = TokenUtils.generateUserToken(user.getEmail(), user.getPassword());
         user.setToken(token);

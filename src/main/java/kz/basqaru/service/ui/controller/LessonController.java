@@ -15,7 +15,7 @@ public class LessonController {
     private final LessonService service;
 
     @PutMapping
-    public ResponseEntity<?> createNews(@RequestBody LessonRequest lessonRequest)throws Exception {
+    public ResponseEntity<?> createLesson(@RequestBody LessonRequest lessonRequest)throws Exception {
         return service.create(lessonRequest);
     }
 

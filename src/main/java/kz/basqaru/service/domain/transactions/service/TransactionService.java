@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -84,26 +85,32 @@ public class TransactionService {
         if (byCategoryRequest.getPeriod() == null) {
             return ResponseEntity.ok(mapper.parse(category, repository.findAllByCategoryId(category.getId())));
         }
+        List<Transaction> transactions = repository.findAllByCategoryId(byCategoryRequest.getCategoryId());
+        List<Transaction> response = new ArrayList<>();
+        for (Transaction transaction : transactions) {
+            if (transaction.getDateTime() <= byCategoryRequest.getPeriod().getTo() && transaction.getDateTime() >= byCategoryRequest.getPeriod().getFrom()) {
+                response.add(transaction);
+            }
+        }
         return ResponseEntity.ok(
             mapper.parse(
                 category,
-                repository.findAllByCategoryIdAndDateTimeBetween(
-                    category.getId(),
-                    byCategoryRequest.getPeriod().getFrom(),
-                    byCategoryRequest.getPeriod().getTo()
-                )
+                response
             )
         );
     }
 
     public ResponseEntity<?> filterByPeriod(User user, PeriodFilter periodFilter) {
+        List<Transaction> transactions = repository.findAllByUserId(user.getId());
+        List<Transaction> response = new ArrayList<>();
+        for (Transaction transaction : transactions) {
+            if (transaction.getDateTime() <= periodFilter.getTo() && transaction.getDateTime() >= periodFilter.getFrom()) {
+                response.add(transaction);
+            }
+        }
         return ResponseEntity.ok(
             mapper.parse(
-                repository.findAllByUserIdAndDateTimeBetween(
-                    user.getId(),
-                    periodFilter.getFrom(),
-                    periodFilter.getTo()
-                )
+                response
             )
         );
     }
