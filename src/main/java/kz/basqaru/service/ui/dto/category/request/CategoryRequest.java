@@ -13,5 +13,6 @@ public class CategoryRequest {
 
     private String name;
     private String imageUrl;
+    private Double limit;
 
 }

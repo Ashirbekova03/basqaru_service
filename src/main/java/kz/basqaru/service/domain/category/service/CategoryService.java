@@ -23,7 +23,8 @@ public class CategoryService {
                 new Category(
                     user.getId(),
                     categoryRequest.getName(),
-                    categoryRequest.getImageUrl()
+                    categoryRequest.getImageUrl(),
+                    categoryRequest.getLimit()
                 )
             )
         );
