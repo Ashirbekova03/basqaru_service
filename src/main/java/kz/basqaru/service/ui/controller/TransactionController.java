@@ -53,9 +53,10 @@ public class TransactionController {
     @GetMapping("/period")
     public ResponseEntity<?> filterByPeriod(
         @RequestHeader(AuthorizationStructure.AUTHORIZATION_HEADER) String token,
-        @RequestBody PeriodFilter periodFilter
+        @RequestParam String from,
+        @RequestParam String to
     ) {
-        return authorization.checkUser(token, user -> service.filterByPeriod(user, periodFilter));
+        return authorization.checkUser(token, user -> service.filterByPeriod(user, new PeriodFilter(Long.parseLong(from), Long.parseLong(to))));
     }
 
 }

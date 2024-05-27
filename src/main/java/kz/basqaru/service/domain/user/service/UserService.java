@@ -84,6 +84,9 @@ public class UserService {
     }
 
     public ResponseEntity<?> changePassword(User user, PasswordChangeRequest passwordChangeRequest) {
+        if (!user.getPassword().equals(passwordChangeRequest.getOldPassword())) {
+            return ResponseEntity.badRequest().body("Wrong old password");
+        }
         user.setPassword(passwordChangeRequest.getPassword());
         String token = TokenUtils.generateUserToken(user.getEmail(), user.getPassword());
         user.setToken(token);
